@@ -4,7 +4,7 @@ import { AddContactForm } from './AddContact/AddContact';
 import { SearchContact } from './Search/SearchContact';
 import { StyledWrapper } from './App.styled';
 import { ToastContainer } from 'react-toastify';
-
+console.log('yes');
 export const App = () => {
   return (
     <StyledWrapper>
