@@ -1,27 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ContactItem from './ContactItem/ContactItem';
 import { StyledUl } from './ContactList.styled';
-import { useSelector } from 'react-redux';
-import { contactsData } from '../../redux/contactSlice';
-import { searchContact } from '../../redux/filterSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchContactsThunk } from '../../redux/operations';
+import {
+  selectError,
+  selectLoading,
+  contactsData,
+  searchContact,
+} from '../../redux/selectors';
 
 function ContactList() {
   const contacts = useSelector(contactsData);
   const filter = useSelector(searchContact);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContactsThunk());
+  }, [dispatch]);
 
   const searchWord = filter.filter.toLowerCase();
-
   const filteredData = contacts.filter(contact => {
     return contact.name.toLowerCase().includes(searchWord);
   });
-
+  
   return (
     <div>
       <h2>Contact list</h2>
-      {filteredData.length !== 0 ? (
+      <div>
+        {loading && <h3>Loading...</h3>}
+        {error && <h3>{error}</h3>}
+      </div>
+      {filteredData?.length !== 0 ? (
         <StyledUl>
-          {filteredData.map(contact => (
-            <ContactItem {...contact} key={contact.id} />
+          {filteredData?.map(contact => (
+          
+            <ContactItem key={contact.id} {...contact} />
+            
           ))}
         </StyledUl>
       ) : (
